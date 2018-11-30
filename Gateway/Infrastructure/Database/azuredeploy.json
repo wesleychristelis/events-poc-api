@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "apiType": {
+      "allowedValues": [
+        "Cassandra",
+        "Gremlin",
+        "MongoDB",
+        "SQL",
+        "Table"
+      ],
+      "defaultValue": "Cassandra",
+      "type": "string"
+    },
+    "databaseAccountName": {
+      "type": "string"
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string"
+    }
+  },
+  "variables": {
+    "offerType": "Standard"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-04-08",
+      "kind": "[if(equals(parameters('apiType'), 'MongoDB'), 'MongoDB', 'GlobalDocumentDB')]",
+      "location": "[parameters('location')]",
+      "name": "[parameters('databaseAccountName')]",
+      "properties": {
+        "name": "[parameters('databaseAccountName')]",
+        "databaseAccountOfferType": "[variables('offerType')]",
+        "locations": [
+          {
+            "locationName": "[parameters('location')]",
+            "failoverPriority": 0
+          },
+          {
+            "locationName": "[parameters('location')]",
+            "failoverPriority": 1
+          }
+        ]
+      },
+      "type": "Microsoft.DocumentDB/databaseAccounts"
+    }
+  ]
+}

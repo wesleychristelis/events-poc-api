@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "cosmosDBAccountEndpoint": {
+      "type": "string"
+    },
+    "cosmosDBAccountKey": {
+      "type": "string"
+    },
+    "eventGridEnabled": {
+      "type": "bool"
+    },
+    "eventGridPersonProfileContextPerceptionTopicKey": {
+      "type": "string"
+    },
+    "eventGridPersonProfileContextPerceptionTopicUrl": {
+      "type": "string"
+    },
+    "location": {
+      "defaultValue": "[resourceGroup().location]",
+      "type": "string"
+    },
+    "sku": {
+      "defaultValue": "S1",
+      "type": "string"
+    },
+    "webAppName": {
+      "minLength": 2,
+      "type": "string"
+    },
+    "websocketAllowUrls": {
+      "type": "array"
+    }
+  },
+  "variables": {
+    "appServicePlanName": "[concat('AppServicePlan-', parameters('webAppName'))]",
+    "webAppPortalName": "[parameters('webAppName')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-08-01",
+      "location": "[parameters('location')]",
+      "kind": "app",
+      "name": "[variables('appServicePlanName')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
+      "type": "Microsoft.Web/serverfarms"
+    },
+    {
+      "apiVersion": "2016-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ],
+      "kind": "app",
+      "location": "[parameters('location')]",
+      "name": "[variables('webAppPortalName')]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "CosmosDB:AccountEndpoint",
+              "value": "[parameters('cosmosDBAccountEndpoint')]"
+            },
+            {
+              "name": "CosmosDB:AccountKey",
+              "value": "[parameters('cosmosDBAccountKey')]"
+            },
+            {
+              "name": "EventGrid:Enabled",
+              "value": "[parameters('eventGridEnabled')]"
+            },
+            {
+              "name": "EventGrid:PersonProfileContextPerceptionTopicKey",
+              "value": "[parameters('eventGridPersonProfileContextPerceptionTopicKey')]"
+            },
+            {
+              "name": "EventGrid:PersonProfileContextPerceptionTopicUrl",
+              "value": "[parameters('eventGridPersonProfileContextPerceptionTopicUrl')]"
+            },
+            {
+              "name": "Websocket:AllowUrls:0",
+              "value": "[parameters('websocketAllowUrls')[0]]"
+            },
+            {
+              "name": "Websocket:AllowUrls:1",
+              "value": "[parameters('websocketAllowUrls')[1]]"
+            }
+          ],
+          "webSocketsEnabled": true
+        }
+      },
+      "type": "Microsoft.Web/sites"
+    }
+  ]
+}
