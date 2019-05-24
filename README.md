@@ -6,7 +6,7 @@ This is a proof-of-concept for a [full-stack event-based architecture](https://m
 Everything from the UI to the persistence layer, and from low-level transport to business logic, works with normalized events.
 
 This is also partially an exploration of how to develop, deploy, and manage a serverless web application, and as such is significantly more complex than justified by the scope. 
-For more context on the design decisions and information flow, see [the medium article about this solution](https://medium.com/@matt.denobrega/639ebd017977).
+
 
 The scope of this POC is extremely limited - creating and saving Person instances.
 
@@ -26,7 +26,7 @@ The scope of this POC is extremely limited - creating and saving Person instance
 
 Clone the repository, open the solution in Visual studio, and run the Gateway project.
 The gateway is set up to use RX channels and the CosmosDB emulator locally, so there are no cloud dependencies.
-The best way to interact with the gateway is to run the [web app](https://github.com/matthewdenobrega/eventuality-poc-web).
+The best way to interact with the gateway is to run the [web app](https://github.com/wesleychristelis/event-poc-spa).
 
 ## Project structure
 
